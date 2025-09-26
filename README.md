@@ -1,4 +1,60 @@
-![main_desktop](https://github.com/BuddiesOfBudgie/budgie-desktop/raw/main/.github/screenshots/MainDesktop.jpg)
+name: Build on Ubuntu 22.04
+on:
+  push:
+    branches:
+      - main
+      - v10.9.x
+  pull_request:
+    branches:
+      - main
+      - v10.9.x
+jobs:
+  fedora:
+    runs-on: ubuntu-latest
+    container: "registry.fedoraproject.org/fedora:rawhide"
+    steps:
+      - name: Swap in the full systemd
+        run: 'dnf swap --assumeyes systemd-standalone-sysusers systemd'
+      - name: Install prerequisites
+        run: |
+          dnf install --assumeyes \
+            'pkgconfig(accountsservice)' \
+            'pkgconfig(alsa)' \
+            'pkgconfig(gee-0.8)' \
+            'pkgconfig(gnome-desktop-3.0)' \
+            'pkgconfig(gnome-settings-daemon)' \
+            'pkgconfig(gstreamer-1.0)' \
+            'pkgconfig(gtk-layer-shell-0)' \
+            'pkgconfig(ibus-1.0)' \
+            'pkgconfig(libcanberra)' \
+            'pkgconfig(libnotify)' \
+            'pkgconfig(libpeas-2)' \
+            'pkgconfig(libpulse)' \
+            'pkgconfig(libwnck-3.0)' \
+            'pkgconfig(libxfce4windowing-0)' \
+            'pkgconfig(polkit-agent-1)' \
+            'pkgconfig(upower-glib)' \
+            'pkgconfig(uuid)' \
+            'pkgconfig(vapigen)' \
+            budgie-desktop-view \
+            budgie-screensaver \
+            desktop-file-utils \
+            gcc \
+            gettext \
+            git \
+            gtk-doc \
+            intltool \
+            magpie-devel \
+            meson \
+            sassc \
+            zenity
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Build Budgie Desktop
+        run: |
+          meson build -Dci=true -Dwith-runtime-dependencies=false
+          meson compile -C buildmain_desktop](https://github.com/BuddiesOfBudgie/budgie-desktop/raw/main/.github/screenshots/MainDesktop.jpg)
 
 # Budgie Desktop
 
